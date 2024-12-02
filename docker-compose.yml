@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  apache:
+    build: .
+    container_name: apache_php
+    ports:
+      - "8000:80"
+    volumes:
+      - ./php:/var/www/php
+    networks:
+      - app_network
+
+  mysql_localhost:
+    image: mysql:8.0  # Latest MySQL version (8.0)
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3307:3306"
+    networks:
+      - app_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql_localhost
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    ports:
+      - "8050:80"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
